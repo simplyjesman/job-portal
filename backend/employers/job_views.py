@@ -85,3 +85,30 @@ class JobDetailView(APIView):
                 {'error': 'Job not found or does not belong to your employer.'},
                 status=status.HTTP_404_NOT_FOUND
             )
+
+    def delete(self, request, job_id):
+        try:
+            employer_user = EmployerUser.objects.get(user=request.user)
+            job = Job.objects.get(id=job_id, employer=employer_user.employer)
+
+            if employer_user.role not in ['admin', 'recruiter']:
+                return Response(
+                    {'error': 'Only admins and recruiters can delete jobs.'},
+                    status=status.HTTP_403_FORBIDDEN
+                )
+
+            job.delete()
+            return Response(
+                {'message': 'Job deleted successfully'},
+                status=status.HTTP_204_NO_CONTENT
+            )
+        except EmployerUser.DoesNotExist:
+            return Response(
+                {'error': 'Employer not found for this user.'},
+                status=status.HTTP_404_NOT_FOUND
+            )
+        except Job.DoesNotExist:
+            return Response(
+                {'error': 'Job not found or does not belong to your employer.'},
+                status=status.HTTP_404_NOT_FOUND
+            )

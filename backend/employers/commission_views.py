@@ -100,6 +100,19 @@ class EmployerCommissionsListView(generics.ListAPIView):
             return Commission.objects.none()
 
 
+class CommissionDetailView(generics.RetrieveUpdateAPIView):
+    """GET/PATCH /commissions/<id> - view/update commission details."""
+    serializer_class = CommissionSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        try:
+            employer_user = self.request.user.employer_user
+            return Commission.objects.filter(employer=employer_user.employer)
+        except:
+            return Commission.objects.none()
+
+
 class AdminCommissionsListView(generics.ListAPIView):
     """List all commissions (admin only)."""
     queryset = Commission.objects.all()

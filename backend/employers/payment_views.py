@@ -217,3 +217,74 @@ class AdminPaymentsListView(APIView):
             'page_size': page_size,
             'results': serializer.data
         }, status=status.HTTP_200_OK)
+
+
+class PaymentListCreateView(APIView):
+    """REST-compliant: POST /invoices/<invoice_id>/payments - create payment for invoice."""
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, invoice_id):
+        try:
+            employer_user = EmployerUser.objects.get(user=request.user)
+            invoice = Invoice.objects.get(id=invoice_id, employer=employer_user.employer)
+
+            if invoice.status in ['paid', 'cancelled']:
+                return Response(
+                    {'error': f'Cannot pay invoice with status: {invoice.status}'},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
+            serializer = PaymentInitiateSerializer(data=request.data)
+            if serializer.is_valid():
+                payment_method = serializer.validated_data['payment_method']
+                payment_reference = f"PAY-{uuid.uuid4().hex[:12].upper()}"
+                payment_url = f"https://paycloud.mock/pay/{payment_reference}"
+
+                payment = Payment.objects.create(
+                    invoice=invoice,
+                    amount=invoice.total_amount,
+                    status='pending',
+                    payment_method=payment_method,
+                    payment_reference=payment_reference,
+                    payment_url=payment_url
+                )
+
+                result_serializer = PaymentSerializer(payment)
+                return Response(result_serializer.data, status=status.HTTP_201_CREATED)
+
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except EmployerUser.DoesNotExist:
+            return Response(
+                {'error': 'Employer not found for this user.'},
+                status=status.HTTP_404_NOT_FOUND
+            )
+        except Invoice.DoesNotExist:
+            return Response(
+                {'error': 'Invoice not found or does not belong to your employer.'},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+
+class EmployerPaymentDetailView(APIView):
+    """REST-compliant: GET /payments/<payment_id> - view payment details."""
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, payment_id):
+        try:
+            employer_user = EmployerUser.objects.get(user=request.user)
+            payment = Payment.objects.get(
+                id=payment_id,
+                invoice__employer=employer_user.employer
+            )
+            serializer = PaymentSerializer(payment)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except EmployerUser.DoesNotExist:
+            return Response(
+                {'error': 'Employer not found for this user.'},
+                status=status.HTTP_404_NOT_FOUND
+            )
+        except Payment.DoesNotExist:
+            return Response(
+                {'error': 'Payment not found or does not belong to your employer.'},
+                status=status.HTTP_404_NOT_FOUND
+            )
