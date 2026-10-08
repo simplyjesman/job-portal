@@ -28,6 +28,7 @@ export default function SignupPage() {
         password_confirm: passwordConfirm,
         user_type: userType
       })
+      localStorage.setItem('userType', userType)
       navigate('/login')
     } catch (err: any) {
       setError(err.response?.data?.message || 'Signup failed')

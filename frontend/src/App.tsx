@@ -7,6 +7,7 @@ import SignupPage from './pages/SignupPage'
 import DashboardPage from './pages/DashboardPage'
 import CandidateSearchPage from './pages/CandidateSearchPage'
 import JobsPage from './pages/JobsPage'
+import InvitesPage from './pages/InvitesPage'
 
 const queryClient = new QueryClient()
 
@@ -25,7 +26,8 @@ function App() {
           <Route element={<AppLayout />}>
             <Route path="/dashboard" element={<DashboardPage />} />
             <Route path="/candidates" element={<CandidateSearchPage />} />
-            <Route path="/jobs" element={<JobsPage />} />
+            <Route path="/invites" element={<JobsPage />} />
+            <Route path="/invites-received" element={<InvitesPage />} />
           </Route>
 
           {/* Redirect root to dashboard */}
