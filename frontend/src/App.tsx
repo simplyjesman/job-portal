@@ -8,6 +8,7 @@ import DashboardPage from './pages/DashboardPage'
 import CandidateSearchPage from './pages/CandidateSearchPage'
 import JobsPage from './pages/JobsPage'
 import InvitesPage from './pages/InvitesPage'
+import ProfilePage from './pages/ProfilePage'
 
 const queryClient = new QueryClient()
 
@@ -28,6 +29,8 @@ function App() {
             <Route path="/candidates" element={<CandidateSearchPage />} />
             <Route path="/invites" element={<JobsPage />} />
             <Route path="/invites-received" element={<InvitesPage />} />
+            <Route path="/profile" element={<ProfilePage />} />
+            <Route path="/profile/:id" element={<ProfilePage />} />
           </Route>
 
           {/* Redirect root to dashboard */}

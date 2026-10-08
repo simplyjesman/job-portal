@@ -1,5 +1,6 @@
 from django.db import models
 from .models import CandidateProfile
+from .skill_models import Skill
 
 
 class WorkHistory(models.Model):
@@ -9,6 +10,7 @@ class WorkHistory(models.Model):
     start_date = models.DateField()
     end_date = models.DateField(blank=True, null=True)
     description = models.TextField(blank=True, null=True, max_length=500)
+    skills = models.ManyToManyField(Skill, related_name='work_history', blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

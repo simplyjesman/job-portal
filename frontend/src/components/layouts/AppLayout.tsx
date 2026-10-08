@@ -44,12 +44,20 @@ export default function AppLayout() {
                 </Link>
               </>
             ) : (
-              <Link
-                to="/invites-received"
-                className={`${isActive('/invites-received') ? 'text-brand-600 font-medium' : 'text-gray-600'} hover:text-brand-600`}
-              >
-                Invites Received
-              </Link>
+              <>
+                <Link
+                  to="/profile"
+                  className={`${isActive('/profile') ? 'text-brand-600 font-medium' : 'text-gray-600'} hover:text-brand-600`}
+                >
+                  My Profile
+                </Link>
+                <Link
+                  to="/invites-received"
+                  className={`${isActive('/invites-received') ? 'text-brand-600 font-medium' : 'text-gray-600'} hover:text-brand-600`}
+                >
+                  Invites Received
+                </Link>
+              </>
             )}
 
             <button

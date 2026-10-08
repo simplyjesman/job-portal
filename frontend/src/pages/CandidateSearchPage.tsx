@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import api from '../services/api'
 
 interface Candidate {
@@ -136,16 +137,24 @@ export default function CandidateSearchPage() {
                       </h3>
                       <p className="text-sm text-gray-500">{candidate.email}</p>
                     </div>
-                    <button
-                      onClick={() => {
-                        setSelectedCandidate(candidate.id)
-                        setShowInviteForm(true)
-                        setInviteForm({ ...inviteForm, location: candidate.location })
-                      }}
-                      className="px-4 py-2 bg-brand-600 text-white rounded hover:bg-brand-700"
-                    >
-                      Send Invite
-                    </button>
+                    <div className="flex gap-2">
+                      <Link
+                        to={`/profile/${candidate.id}`}
+                        className="px-4 py-2 bg-gray-200 text-gray-900 rounded hover:bg-gray-300"
+                      >
+                        View Profile
+                      </Link>
+                      <button
+                        onClick={() => {
+                          setSelectedCandidate(candidate.id)
+                          setShowInviteForm(true)
+                          setInviteForm({ ...inviteForm, location: candidate.location })
+                        }}
+                        className="px-4 py-2 bg-brand-600 text-white rounded hover:bg-brand-700"
+                      >
+                        Send Invite
+                      </button>
+                    </div>
                   </div>
 
                   <div className="grid grid-cols-2 gap-4 text-sm">
