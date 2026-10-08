@@ -1,5 +1,6 @@
 import pytest
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
+User = get_user_model()
 from rest_framework.test import APIClient
 from .models import CandidateProfile
 from .availability_models import Availability
@@ -10,7 +11,7 @@ class TestAvailabilityCreate:
     def setup_method(self):
         self.client = APIClient()
         self.user = User.objects.create_user(
-            username='candidate@example.com',
+
             email='candidate@example.com',
             password='securepassword123'
         )
@@ -109,7 +110,7 @@ class TestAvailabilityCreate:
 
     def test_create_availability_not_own_profile(self):
         other_user = User.objects.create_user(
-            username='other@example.com',
+
             email='other@example.com',
             password='password123'
         )
@@ -129,7 +130,7 @@ class TestAvailabilityRetrieve:
     def setup_method(self):
         self.client = APIClient()
         self.user = User.objects.create_user(
-            username='candidate@example.com',
+
             email='candidate@example.com',
             password='securepassword123'
         )
@@ -176,7 +177,7 @@ class TestAvailabilityUpdate:
     def setup_method(self):
         self.client = APIClient()
         self.user = User.objects.create_user(
-            username='candidate@example.com',
+
             email='candidate@example.com',
             password='securepassword123'
         )
@@ -220,7 +221,7 @@ class TestAvailabilityUpdate:
 
     def test_update_availability_not_own_profile(self):
         other_user = User.objects.create_user(
-            username='other@example.com',
+
             email='other@example.com',
             password='password123'
         )

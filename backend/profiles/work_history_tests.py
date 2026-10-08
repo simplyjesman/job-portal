@@ -1,6 +1,7 @@
 import pytest
 from datetime import date
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
+User = get_user_model()
 from rest_framework.test import APIClient
 from .models import CandidateProfile
 from .work_history_models import WorkHistory
@@ -11,7 +12,7 @@ class TestWorkHistoryCreate:
     def setup_method(self):
         self.client = APIClient()
         self.user = User.objects.create_user(
-            username='candidate@example.com',
+
             email='candidate@example.com',
             password='securepassword123'
         )
@@ -97,7 +98,7 @@ class TestWorkHistoryCreate:
 
     def test_create_work_history_not_own_profile(self):
         other_user = User.objects.create_user(
-            username='other@example.com',
+
             email='other@example.com',
             password='password123'
         )
@@ -125,7 +126,7 @@ class TestWorkHistoryRetrieve:
     def setup_method(self):
         self.client = APIClient()
         self.user = User.objects.create_user(
-            username='candidate@example.com',
+
             email='candidate@example.com',
             password='securepassword123'
         )
@@ -185,7 +186,7 @@ class TestWorkHistoryUpdate:
     def setup_method(self):
         self.client = APIClient()
         self.user = User.objects.create_user(
-            username='candidate@example.com',
+
             email='candidate@example.com',
             password='securepassword123'
         )

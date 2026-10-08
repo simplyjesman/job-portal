@@ -1,7 +1,6 @@
 import { useState } from 'react'
 
 export default function CandidateSearchPage() {
-  const [skills, setSkills] = useState<string[]>([])
   const [location, setLocation] = useState('')
 
   return (

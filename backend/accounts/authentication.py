@@ -2,6 +2,22 @@ from rest_framework.authentication import TokenAuthentication
 from rest_framework.exceptions import AuthenticationFailed
 from .models import SessionToken
 from django.utils import timezone
+from django.contrib.auth import get_user_model
+from django.contrib.auth.backends import ModelBackend
+
+User = get_user_model()
+
+
+class EmailBackend(ModelBackend):
+    def authenticate(self, request, username=None, password=None, email=None, **kwargs):
+        try:
+            user = User.objects.get(email=email or username)
+        except User.DoesNotExist:
+            return None
+
+        if user.check_password(password):
+            return user
+        return None
 
 
 class SessionTokenAuthentication(TokenAuthentication):

@@ -1,5 +1,6 @@
 import pytest
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
+User = get_user_model()
 from rest_framework.test import APIClient
 from rest_framework import status
 from employers.models import Employer, EmployerUser
@@ -17,7 +18,7 @@ class TestJobApplication:
 
         self.candidate_user = User.objects.create_user(
             email='candidate@example.com',
-            username='candidate@example.com',
+
             password='SecurePass123'
         )
         self.candidate = CandidateProfile.objects.create(
@@ -47,7 +48,7 @@ class TestJobApplication:
         )
         self.employer_user = User.objects.create_user(
             email='employer@example.com',
-            username='employer@example.com',
+
             password='SecurePass123'
         )
         EmployerUser.objects.create(user=self.employer_user, employer=self.employer, role='recruiter')
@@ -118,7 +119,7 @@ class TestJobApplication:
     def test_apply_requires_candidate_profile(self):
         user_without_profile = User.objects.create_user(
             email='noprofile@example.com',
-            username='noprofile@example.com',
+
             password='SecurePass123'
         )
         token = SessionToken.objects.create(
@@ -186,7 +187,7 @@ class TestJobApplication:
     def test_get_application_detail_not_own(self):
         other_candidate_user = User.objects.create_user(
             email='other@example.com',
-            username='other@example.com',
+
             password='SecurePass123'
         )
         other_candidate = CandidateProfile.objects.create(
@@ -243,7 +244,7 @@ class TestMutualHireConfirmation:
 
         self.candidate_user = User.objects.create_user(
             email='candidate@example.com',
-            username='candidate@example.com',
+
             password='SecurePass123'
         )
         self.candidate = CandidateProfile.objects.create(
@@ -273,7 +274,7 @@ class TestMutualHireConfirmation:
         )
         self.employer_user = User.objects.create_user(
             email='employer@example.com',
-            username='employer@example.com',
+
             password='SecurePass123'
         )
         self.employer_recruiter = EmployerUser.objects.create(
@@ -419,7 +420,7 @@ class TestMutualHireConfirmation:
     def test_cannot_mark_hired_by_viewer(self):
         viewer_user = User.objects.create_user(
             email='viewer@example.com',
-            username='viewer@example.com',
+
             password='SecurePass123'
         )
         EmployerUser.objects.create(user=viewer_user, employer=self.employer, role='viewer')

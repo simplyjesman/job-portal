@@ -1,7 +1,9 @@
 import pytest
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from rest_framework.test import APIClient
 from .models import CandidateProfile
+
+User = get_user_model()
 
 
 @pytest.mark.django_db
@@ -10,7 +12,7 @@ class TestCandidateProfileCreation:
         self.client = APIClient()
         self.create_url = '/api/profiles'
         self.user = User.objects.create_user(
-            username='candidate@example.com',
+
             email='candidate@example.com',
             password='securepassword123'
         )
@@ -76,7 +78,7 @@ class TestCandidateProfileRetrieval:
     def setup_method(self):
         self.client = APIClient()
         self.user = User.objects.create_user(
-            username='candidate@example.com',
+
             email='candidate@example.com',
             password='securepassword123'
         )
@@ -107,7 +109,7 @@ class TestCandidateProfileRetrieval:
 
     def test_get_profile_employer_viewing(self):
         other_user = User.objects.create_user(
-            username='employer@example.com',
+
             email='employer@example.com',
             password='password123'
         )
@@ -124,7 +126,7 @@ class TestCandidateProfileUpdate:
     def setup_method(self):
         self.client = APIClient()
         self.user = User.objects.create_user(
-            username='candidate@example.com',
+
             email='candidate@example.com',
             password='securepassword123'
         )
@@ -179,7 +181,7 @@ class TestCandidateProfileUpdate:
 
     def test_update_profile_not_own_profile(self):
         other_user = User.objects.create_user(
-            username='other@example.com',
+
             email='other@example.com',
             password='password123'
         )

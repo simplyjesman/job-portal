@@ -1,9 +1,11 @@
 import pytest
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from rest_framework.test import APIClient
 from rest_framework import status
 from .models import Employer, EmployerUser
 from accounts.models import SessionToken
+
+User = get_user_model()
 
 
 @pytest.mark.django_db
@@ -31,7 +33,7 @@ class TestEmployerRegistration:
         assert employer_user.role == 'admin'
 
     def test_employer_registration_duplicate_email(self):
-        User.objects.create_user(email='existing@example.com', username='existing@example.com', password='Pass123')
+        User.objects.create_user(email='existing@example.com', password='Pass123')
 
         data = {
             'email': 'existing@example.com',
@@ -82,7 +84,7 @@ class TestEmployerProfile:
         self.client = APIClient()
         self.user = User.objects.create_user(
             email='employer@example.com',
-            username='employer@example.com',
+
             password='SecurePass123'
         )
         self.employer = Employer.objects.create(
@@ -128,22 +130,22 @@ class TestTeamMembers:
         self.client = APIClient()
         self.admin_user = User.objects.create_user(
             email='admin@example.com',
-            username='admin@example.com',
+
             password='SecurePass123'
         )
         self.recruiter_user = User.objects.create_user(
             email='recruiter@example.com',
-            username='recruiter@example.com',
+
             password='SecurePass123'
         )
         self.viewer_user = User.objects.create_user(
             email='viewer@example.com',
-            username='viewer@example.com',
+
             password='SecurePass123'
         )
         self.new_user = User.objects.create_user(
             email='newuser@example.com',
-            username='newuser@example.com',
+
             password='SecurePass123'
         )
         self.employer = Employer.objects.create(
@@ -265,17 +267,17 @@ class TestJobPosting:
         self.client = APIClient()
         self.admin_user = User.objects.create_user(
             email='admin@example.com',
-            username='admin@example.com',
+
             password='SecurePass123'
         )
         self.recruiter_user = User.objects.create_user(
             email='recruiter@example.com',
-            username='recruiter@example.com',
+
             password='SecurePass123'
         )
         self.viewer_user = User.objects.create_user(
             email='viewer@example.com',
-            username='viewer@example.com',
+
             password='SecurePass123'
         )
         self.employer = Employer.objects.create(
@@ -419,17 +421,17 @@ class TestJobManagement:
         self.client = APIClient()
         self.admin_user = User.objects.create_user(
             email='admin@example.com',
-            username='admin@example.com',
+
             password='SecurePass123'
         )
         self.recruiter_user = User.objects.create_user(
             email='recruiter@example.com',
-            username='recruiter@example.com',
+
             password='SecurePass123'
         )
         self.viewer_user = User.objects.create_user(
             email='viewer@example.com',
-            username='viewer@example.com',
+
             password='SecurePass123'
         )
         self.employer = Employer.objects.create(
@@ -537,7 +539,7 @@ class TestCandidateSearch:
         
         self.employer_user = User.objects.create_user(
             email='employer@example.com',
-            username='employer@example.com',
+
             password='SecurePass123'
         )
         self.employer = Employer.objects.create(
@@ -560,7 +562,7 @@ class TestCandidateSearch:
 
         self.candidate1_user = User.objects.create_user(
             email='candidate1@example.com',
-            username='candidate1@example.com',
+
             password='SecurePass123'
         )
         self.candidate1 = CandidateProfile.objects.create(
@@ -583,7 +585,7 @@ class TestCandidateSearch:
 
         self.candidate2_user = User.objects.create_user(
             email='candidate2@example.com',
-            username='candidate2@example.com',
+
             password='SecurePass123'
         )
         self.candidate2 = CandidateProfile.objects.create(
@@ -606,7 +608,7 @@ class TestCandidateSearch:
 
         self.paused_candidate_user = User.objects.create_user(
             email='paused@example.com',
-            username='paused@example.com',
+
             password='SecurePass123'
         )
         self.paused_candidate = CandidateProfile.objects.create(
@@ -688,12 +690,12 @@ class TestCandidateShortlist:
         
         self.admin_user = User.objects.create_user(
             email='admin@example.com',
-            username='admin@example.com',
+
             password='SecurePass123'
         )
         self.recruiter_user = User.objects.create_user(
             email='recruiter@example.com',
-            username='recruiter@example.com',
+
             password='SecurePass123'
         )
         self.employer = Employer.objects.create(
@@ -716,7 +718,7 @@ class TestCandidateShortlist:
 
         self.candidate1_user = User.objects.create_user(
             email='candidate1@example.com',
-            username='candidate1@example.com',
+
             password='SecurePass123'
         )
         self.candidate1 = CandidateProfile.objects.create(
@@ -729,7 +731,7 @@ class TestCandidateShortlist:
 
         self.candidate2_user = User.objects.create_user(
             email='candidate2@example.com',
-            username='candidate2@example.com',
+
             password='SecurePass123'
         )
         self.candidate2 = CandidateProfile.objects.create(
@@ -800,7 +802,7 @@ class TestCandidateShortlist:
         from employers.shortlist_models import CandidateShortlist
         viewer_user = User.objects.create_user(
             email='viewer@example.com',
-            username='viewer@example.com',
+
             password='SecurePass123'
         )
         EmployerUser.objects.create(user=viewer_user, employer=self.employer, role='viewer')
@@ -827,17 +829,17 @@ class TestApplicationReview:
 
         self.admin_user = User.objects.create_user(
             email='admin@example.com',
-            username='admin@example.com',
+
             password='SecurePass123'
         )
         self.recruiter_user = User.objects.create_user(
             email='recruiter@example.com',
-            username='recruiter@example.com',
+
             password='SecurePass123'
         )
         self.viewer_user = User.objects.create_user(
             email='viewer@example.com',
-            username='viewer@example.com',
+
             password='SecurePass123'
         )
         self.employer = Employer.objects.create(
@@ -877,7 +879,7 @@ class TestApplicationReview:
 
         self.candidate_user = User.objects.create_user(
             email='candidate@example.com',
-            username='candidate@example.com',
+
             password='SecurePass123'
         )
         self.candidate = CandidateProfile.objects.create(
@@ -1039,17 +1041,17 @@ class TestApplicationShortlist:
 
         self.admin_user = User.objects.create_user(
             email='admin@example.com',
-            username='admin@example.com',
+
             password='SecurePass123'
         )
         self.recruiter_user = User.objects.create_user(
             email='recruiter@example.com',
-            username='recruiter@example.com',
+
             password='SecurePass123'
         )
         self.viewer_user = User.objects.create_user(
             email='viewer@example.com',
-            username='viewer@example.com',
+
             password='SecurePass123'
         )
         self.employer = Employer.objects.create(
@@ -1089,7 +1091,7 @@ class TestApplicationShortlist:
 
         self.candidate_user = User.objects.create_user(
             email='candidate@example.com',
-            username='candidate@example.com',
+
             password='SecurePass123'
         )
         self.candidate = CandidateProfile.objects.create(
@@ -1235,12 +1237,12 @@ class TestCommissionCalculation:
 
         self.admin_user = User.objects.create_user(
             email='admin@example.com',
-            username='admin@example.com',
+
             password='SecurePass123'
         )
         self.recruiter_user = User.objects.create_user(
             email='recruiter@example.com',
-            username='recruiter@example.com',
+
             password='SecurePass123'
         )
         self.employer = Employer.objects.create(
@@ -1274,7 +1276,7 @@ class TestCommissionCalculation:
 
         self.candidate_user = User.objects.create_user(
             email='candidate@example.com',
-            username='candidate@example.com',
+
             password='SecurePass123'
         )
         self.candidate = CandidateProfile.objects.create(
@@ -1379,7 +1381,7 @@ class TestCommissionCalculation:
     def test_non_recruiter_cannot_view_commissions(self):
         viewer_user = User.objects.create_user(
             email='viewer@example.com',
-            username='viewer@example.com',
+
             password='SecurePass123'
         )
         EmployerUser.objects.create(user=viewer_user, employer=self.employer, role='viewer')
@@ -1451,7 +1453,7 @@ class TestInvoiceGeneration:
 
         self.recruiter_user = User.objects.create_user(
             email='recruiter@example.com',
-            username='recruiter@example.com',
+
             password='SecurePass123'
         )
         self.employer = Employer.objects.create(
@@ -1479,7 +1481,7 @@ class TestInvoiceGeneration:
 
         self.candidate_user = User.objects.create_user(
             email='candidate@example.com',
-            username='candidate@example.com',
+
             password='SecurePass123'
         )
         self.candidate = CandidateProfile.objects.create(
@@ -1652,7 +1654,7 @@ class TestInvoiceGeneration:
     def test_non_recruiter_cannot_generate_invoice(self):
         viewer_user = User.objects.create_user(
             email='viewer@example.com',
-            username='viewer@example.com',
+
             password='SecurePass123'
         )
         EmployerUser.objects.create(user=viewer_user, employer=self.employer, role='viewer')
@@ -1678,7 +1680,7 @@ class TestPaymentProcessing:
 
         self.recruiter_user = User.objects.create_user(
             email='recruiter@example.com',
-            username='recruiter@example.com',
+
             password='SecurePass123'
         )
         self.employer = Employer.objects.create(
@@ -1706,7 +1708,7 @@ class TestPaymentProcessing:
 
         self.candidate_user = User.objects.create_user(
             email='candidate@example.com',
-            username='candidate@example.com',
+
             password='SecurePass123'
         )
         self.candidate = CandidateProfile.objects.create(
@@ -1858,7 +1860,7 @@ class TestPaymentProcessing:
     def test_non_recruiter_cannot_initiate_payment(self):
         viewer_user = User.objects.create_user(
             email='viewer@example.com',
-            username='viewer@example.com',
+
             password='SecurePass123'
         )
         EmployerUser.objects.create(user=viewer_user, employer=self.employer, role='viewer')

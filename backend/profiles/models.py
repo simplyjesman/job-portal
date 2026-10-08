@@ -1,10 +1,10 @@
 from django.db import models
-from django.contrib.auth.models import User
+from django.conf import settings
 from django.utils import timezone
 
 
 class CandidateProfile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='candidate_profile')
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='candidate_profile')
     first_name = models.CharField(max_length=255)
     last_name = models.CharField(max_length=255)
     phone = models.CharField(max_length=20, blank=True, null=True)

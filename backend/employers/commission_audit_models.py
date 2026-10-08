@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import User
+from django.conf import settings
 from .commission_models import Commission
 
 
@@ -15,7 +15,7 @@ class CommissionAuditLog(models.Model):
 
     commission = models.ForeignKey(Commission, on_delete=models.CASCADE, related_name='audit_logs')
     action = models.CharField(max_length=20, choices=ACTION_CHOICES)
-    admin_user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    admin_user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True)
     previous_amount = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     new_amount = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     reason = models.TextField(blank=True, max_length=500)
@@ -43,7 +43,7 @@ class CommissionDispute(models.Model):
     notes = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     resolved_at = models.DateTimeField(null=True, blank=True)
-    resolved_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='resolved_disputes')
+    resolved_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True, related_name='resolved_disputes')
 
     class Meta:
         ordering = ['-created_at']

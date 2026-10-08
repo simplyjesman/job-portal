@@ -102,7 +102,6 @@ docker-compose exec web python manage.py createsuperuser
 
 Follow prompts:
 ```
-Username: admin
 Email: admin@example.com
 Password: (enter password)
 Password (again): (confirm)

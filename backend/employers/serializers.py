@@ -1,6 +1,8 @@
 from rest_framework import serializers
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from .models import Employer, EmployerUser
+
+User = get_user_model()
 
 
 class EmployerRegistrationSerializer(serializers.Serializer):
@@ -31,7 +33,6 @@ class EmployerRegistrationSerializer(serializers.Serializer):
 
         user = User.objects.create_user(
             email=email,
-            username=email,
             password=password
         )
 

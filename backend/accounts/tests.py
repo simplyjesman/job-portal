@@ -1,10 +1,13 @@
 import pytest
-from django.contrib.auth.models import User
-from django.core.mail import outbox
+from django.contrib.auth import get_user_model
+from django.test import override_settings
+from django.core import mail
 from django.utils import timezone
 from rest_framework.test import APIClient
 from datetime import timedelta
 from .models import EmailVerificationToken, PasswordResetToken, SessionToken
+
+User = get_user_model()
 
 
 @pytest.mark.django_db
@@ -24,11 +27,11 @@ class TestSignup:
         assert User.objects.filter(email='candidate@example.com').exists()
         user = User.objects.get(email='candidate@example.com')
         assert not user.is_active
-        assert len(outbox) == 1
-        assert 'Verify your email' in outbox[0].subject
+        assert len(mail.outbox) == 1
+        assert 'Verify your email' in mail.outbox[0].subject
 
     def test_signup_duplicate_email(self):
-        User.objects.create_user(username='existing@example.com', email='existing@example.com', password='password123')
+        User.objects.create_user(email='existing@example.com', password='password123')
         response = self.client.post(self.signup_url, {
             'email': 'existing@example.com',
             'password': 'securepassword123',
@@ -69,7 +72,7 @@ class TestVerifyEmail:
         self.client = APIClient()
         self.verify_url = '/api/auth/verify-email'
         self.user = User.objects.create_user(
-            username='candidate@example.com',
+
             email='candidate@example.com',
             password='securepassword123'
         )
@@ -115,7 +118,7 @@ class TestLogin:
         self.client = APIClient()
         self.login_url = '/api/auth/login'
         self.user = User.objects.create_user(
-            username='candidate@example.com',
+
             email='candidate@example.com',
             password='securepassword123'
         )
@@ -182,7 +185,7 @@ class TestForgotPassword:
         self.client = APIClient()
         self.forgot_url = '/api/auth/forgot-password'
         self.user = User.objects.create_user(
-            username='candidate@example.com',
+
             email='candidate@example.com',
             password='securepassword123'
         )
@@ -195,8 +198,8 @@ class TestForgotPassword:
         })
         assert response.status_code == 200
         assert response.data['message'] == 'Password reset email sent'
-        assert len(outbox) == 1
-        assert 'Reset your password' in outbox[0].subject
+        assert len(mail.outbox) == 1
+        assert 'Reset your password' in mail.outbox[0].subject
         assert PasswordResetToken.objects.filter(user=self.user).exists()
 
     def test_forgot_password_nonexistent_email(self):
@@ -213,7 +216,7 @@ class TestResetPassword:
         self.client = APIClient()
         self.reset_url = '/api/auth/reset-password'
         self.user = User.objects.create_user(
-            username='candidate@example.com',
+
             email='candidate@example.com',
             password='oldpassword123'
         )
@@ -287,7 +290,7 @@ class TestLogout:
         self.client = APIClient()
         self.logout_url = '/api/auth/logout'
         self.user = User.objects.create_user(
-            username='candidate@example.com',
+
             email='candidate@example.com',
             password='securepassword123'
         )

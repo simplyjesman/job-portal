@@ -1,10 +1,11 @@
 from rest_framework import serializers
-from django.contrib.auth.models import User
-from django.contrib.auth import authenticate
+from django.contrib.auth import authenticate, get_user_model
 from .models import EmailVerificationToken, PasswordResetToken
 import secrets
 from django.utils import timezone
 from django.conf import settings
+
+User = get_user_model()
 
 
 class SignupSerializer(serializers.Serializer):
@@ -21,7 +22,6 @@ class SignupSerializer(serializers.Serializer):
 
     def create(self, validated_data):
         user = User.objects.create_user(
-            username=validated_data['email'],
             email=validated_data['email'],
             password=validated_data['password']
         )
@@ -36,7 +36,7 @@ class LoginSerializer(serializers.Serializer):
     remember_me = serializers.BooleanField(default=False)
 
     def validate(self, data):
-        user = authenticate(username=data['email'], password=data['password'])
+        user = authenticate(email=data['email'], password=data['password'])
         if not user:
             raise serializers.ValidationError("Invalid email or password")
         if not user.is_active:

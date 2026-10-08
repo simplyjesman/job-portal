@@ -1,6 +1,7 @@
 import pytest
 from datetime import date
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
+User = get_user_model()
 from rest_framework.test import APIClient
 from .models import CandidateProfile
 from .skill_models import Skill, CandidateSkill
@@ -13,7 +14,7 @@ from .profile_utils import is_profile_complete, update_profile_status
 class TestProfileCompleteness:
     def setup_method(self):
         self.user = User.objects.create_user(
-            username='candidate@example.com',
+
             email='candidate@example.com',
             password='securepassword123'
         )
@@ -75,7 +76,7 @@ class TestProfileCompleteness:
 class TestProfileStatusTransition:
     def setup_method(self):
         self.user = User.objects.create_user(
-            username='candidate@example.com',
+
             email='candidate@example.com',
             password='securepassword123'
         )
@@ -133,7 +134,7 @@ class TestProfileStatusAPI:
     def setup_method(self):
         self.client = APIClient()
         self.user = User.objects.create_user(
-            username='candidate@example.com',
+
             email='candidate@example.com',
             password='securepassword123'
         )

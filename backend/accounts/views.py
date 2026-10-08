@@ -2,13 +2,15 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from django.utils import timezone
 from django.core.mail import send_mail
 from django.conf import settings
 from datetime import timedelta
 import secrets
 import jwt
+
+User = get_user_model()
 
 from .models import EmailVerificationToken, PasswordResetToken, SessionToken
 from .serializers import (

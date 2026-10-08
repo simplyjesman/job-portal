@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import User
+from django.conf import settings
 
 class Employer(models.Model):
     name = models.CharField(max_length=255)
@@ -26,7 +26,7 @@ class EmployerUser(models.Model):
         ('viewer', 'Viewer'),
     ]
 
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='employer_user')
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='employer_user')
     employer = models.ForeignKey(Employer, on_delete=models.CASCADE, related_name='team_members')
     role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='recruiter')
     created_at = models.DateTimeField(auto_now_add=True)

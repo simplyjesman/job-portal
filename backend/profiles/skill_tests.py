@@ -1,5 +1,6 @@
 import pytest
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
+User = get_user_model()
 from rest_framework.test import APIClient
 from .models import CandidateProfile
 from .skill_models import Skill, CandidateSkill
@@ -11,7 +12,7 @@ class TestSkillList:
         self.client = APIClient()
         self.skills_url = '/api/skills'
         self.user = User.objects.create_user(
-            username='candidate@example.com',
+
             email='candidate@example.com',
             password='securepassword123'
         )
@@ -42,7 +43,7 @@ class TestCandidateSkills:
     def setup_method(self):
         self.client = APIClient()
         self.user = User.objects.create_user(
-            username='candidate@example.com',
+
             email='candidate@example.com',
             password='securepassword123'
         )
@@ -123,7 +124,7 @@ class TestCandidateSkills:
 
     def test_add_skills_not_own_profile(self):
         other_user = User.objects.create_user(
-            username='other@example.com',
+
             email='other@example.com',
             password='password123'
         )

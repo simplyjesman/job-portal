@@ -5,47 +5,50 @@
 ### User Types
 
 **Candidate**
-A person seeking employment. Has a profile containing structured CV data (name, contact, skills, work history, education, certifications, portfolio links). May apply to jobs and upload supporting documents. Not tied to an employer.
+A person seeking employment. Has a profile containing structured CV data (name, contact, skills, work history, education, certifications, portfolio links). Receives interview invites from employers. Can accept or decline invites. Not tied to an employer.
 
 **Employer**
-A company or organization hiring. Represented by a team account with multiple team members (HR staff). Posts jobs and searches/filters candidate profiles. Pays commissions on successful hires.
+A company or organization hiring. Represented by a team account with multiple team members (HR staff). Searches candidates by skills/location and sends interview invites. Pays commissions on successful hires.
 
 **Employer Team Member** (or **Team User**)
-A person who belongs to an Employer account (e.g., HR manager, recruiter). Can post jobs, search candidates, review applications, confirm hires, manage team members. Multiple team members per Employer.
+A person who belongs to an Employer account (e.g., HR manager, recruiter). Can search candidates, send interview invites, confirm hires, manage team members. Multiple team members per Employer.
 
-### Job & Application
-
-**Job Listing** (or **Job**)
-A posted position by an Employer. Contains: title, description, location, salary range, required skills (from predefined list), experience level. Status: published, closed, expired. Can be edited or unpublished by the Employer or a Platform Admin.
+### Candidate Profile & Skills
 
 **Candidate Profile**
 Structured CV data entered by a Candidate: name, email, phone, location, skills (multi-select from predefined list), work history (company, role, dates, description), education (institution, degree, field, dates), certifications, portfolio links, availability, salary expectations. The profile IS the CV (no separate CV file upload).
 
 **Supporting Document**
-Optional file uploaded by a Candidate to supplement their profile. Types: cover letter, portfolio sample, certification image, reference. Max 5 per Candidate. Sent with each application or visible on profile.
+Optional file uploaded by a Candidate to supplement their profile. Types: cover letter, portfolio sample, certification image, reference. Max 5 per Candidate. Visible on their profile.
 
 **Skill**
-A searchable, predefined tag (e.g., "Python", "Django", "AWS", "Leadership"). Both Employers (on Job Listings) and Candidates (on profiles) select from this list. Searchable and filterable.
+A searchable, predefined tag (e.g., "Python", "Django", "AWS", "Leadership"). Candidates select from this list on their profile. Employers search/filter by skills to find candidates. Searchable and filterable.
 
-**Application**
-A Candidate applies to a Job Listing. Includes: application date, Candidate profile snapshot, optional supporting documents, status. Statuses: **applied** (initial), **shortlisted** (Employer reviewed favorably), **rejected** (Employer rejected), **withdrawn** (Candidate withdrew), **hired_confirmed** (mutual hire confirmation complete).
+### Interview Invites & Hiring
 
-### Hiring & Commission
+**Interview Invite**
+Employer sends an interview invite to a Candidate with:
+- Job description/role details
+- Salary range (optional)
+- Required skills (optional)
+- Custom message from Employer
+
+Candidate can **accept** or **decline** the invite. Statuses: **sent**, **accepted**, **declined**.
 
 **Hire Confirmation**
-Mutual agreement between Employer and Candidate that the job is filled. Both must confirm:
-1. Employer confirms the Candidate was hired for the Job.
-2. Candidate confirms they accepted the job offer.
-Until both confirm, the Application remains in shortlist state. Once both confirm, status moves to **hired_confirmed** and commission is due.
+When Candidate accepts an interview invite, a Hire is automatically confirmed. Commission is triggered immediately on acceptance (no mutual confirmation step needed). Employer can track:
+- When invite was sent
+- When candidate accepted
+- When hire is finalized (30 days post-acceptance)
 
 **Commission**
-Payment from Employer to Platform on a successful hire. Triggered by **hired_confirmed** status.
+Payment from Employer to Platform on successful hire. Triggered automatically when Candidate **accepts** interview invite.
 
 **Commission Invoice**
-Monthly batch invoice to Employer for all confirmed hires that month. Settled via Stripe or bank transfer.
+Monthly batch invoice to Employer for all accepted hires that month. Settled via Stripe or bank transfer.
 
 **Refund Window**
-30-day period after hire confirmation. If Candidate leaves or is terminated within 30 days, Employer is refunded the commission. After 30 days, commission is non-refundable.
+30-day period after hire acceptance. If Candidate leaves or is terminated within 30 days, Employer is refunded the commission. After 30 days, commission is non-refundable and hire is finalized (no new disputes allowed).
 
 ### Data Lifecycle
 
@@ -63,22 +66,26 @@ After 90-day archive period, archived Candidate data is permanently deleted per 
 |---|---|---|
 | Candidate → Profile | 1:1 | One profile per Candidate. |
 | Candidate → Supporting Documents | 1:N | Max 5 documents per Candidate. |
-| Candidate → Applications | 1:N | Multiple applications to different jobs. |
-| Employer → Job Listings | 1:N | One Employer posts many jobs. |
+| Candidate → Interview Invites | 1:N | Multiple invites from different employers. |
 | Employer → Team Members | 1:N | Multiple HR staff per Employer. |
-| Job Listing → Applications | 1:N | Multiple Candidates apply to one job. |
-| Application → Hire (if hired) | 1:1 | One Candidate hired per Job (exclusive). |
+| Employer → Interview Invites | 1:N | One Employer sends many invites. |
+| Employer → Hires | 1:N | Multiple hires from accepted invites. |
+| Interview Invite → Hire (if accepted) | 0:1 | Becomes a Hire when Candidate accepts. |
 | Hire → Commission Invoice | N:1 | Multiple hires billed on one monthly invoice. |
 
 ---
 
-## Search & Discovery
+## Candidate Discovery
 
-**Candidate Search** (by Employer)
-Employers search/filter candidate profiles by: skills (predefined dropdown), location, experience level, salary range, availability. Results ranked by relevance and newest-first. Full-text search on resume/profile text also supported (PostgreSQL FTS).
+**Employer searches Candidates**
+Employers search/filter candidate profiles by:
+- Skills (predefined dropdown, multi-select)
+- Location (text search)
+- Salary expectations (range)
+- Availability (when they can start)
+- Experience level (optional, from work history)
 
-**Job Search** (by Candidate)
-Candidates browse and search job listings by: title, location, skills required, salary range. Can bookmark or apply directly.
+Results ranked by relevance and newest-first. Full-text search on profile text supported (PostgreSQL FTS).
 
 ---
 
@@ -88,9 +95,10 @@ See `/docs/adr/` for detailed architectural decision records:
 
 - **[ADR 0001: Profile-as-CV](../docs/adr/0001-profile-as-cv.md)** — Candidates provide structured profile data (skills, work history, education) instead of uploading CV files. Supporting documents (cover letter, portfolio) are optional supplements.
 
-- **[ADR 0002: Mutual Hire Confirmation](../docs/adr/0002-mutual-hire-confirmation-triggers-commission.md)** — Hire is confirmed and commission is triggered only when both Employer and Candidate have mutually agreed. Prevents disputes and ensures fair treatment.
+- **[ADR 0002: Invite-Based Hiring (Replaces Mutual Confirmation)](../docs/adr/0002-invite-based-hiring.md)** — Employers send interview invites to candidates (not job postings). Commission is triggered when candidate accepts invite. Simpler flow, no mutual confirmation step.
 
 ## Policy Decisions (To Be Determined)
 
 - **Off-platform hiring**: Platform cannot prevent Candidates and Employers from hiring outside the platform. Requires Terms of Service clause and enforcement strategy (flagging, account suspension for repeat abuse).
-- **Dispute resolution**: How long can disputes be open? What evidence is needed to prove a hire was made or terminated early?
+- **Dispute resolution**: Disputes must be raised within 30 days of hire acceptance. After 30 days, hire is finalized and no disputes/refunds allowed.
+- **Interview invite expiry**: Do invites expire after a certain period (e.g., 14 days)? Or do they remain valid indefinitely until accepted/declined?

@@ -1,6 +1,6 @@
 from django.db import models
 from django.utils import timezone
-from jobs.hire_confirmation_models import HireConfirmation
+from jobs.hire_models import Hire
 
 
 class Commission(models.Model):
@@ -11,7 +11,7 @@ class Commission(models.Model):
         ('refunded', 'Refunded'),
     ]
 
-    hire_confirmation = models.OneToOneField(HireConfirmation, on_delete=models.CASCADE, related_name='commission')
+    hire = models.OneToOneField(Hire, on_delete=models.CASCADE, related_name='commission')
     employer = models.ForeignKey('Employer', on_delete=models.CASCADE, related_name='commissions')
     
     # Amount (in GBP)
