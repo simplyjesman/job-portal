@@ -6,7 +6,7 @@ interface InterviewInvite {
   job_title: string
   candidate_name: string
   candidate_email: string
-  status: 'sent' | 'accepted' | 'declined'
+  status: 'sent' | 'accepted' | 'declined' | 'cancelled'
   sent_at: string
   accepted_at?: string
 }
@@ -14,7 +14,7 @@ interface InterviewInvite {
 export default function JobsPage() {
   const [invites, setInvites] = useState<InterviewInvite[]>([])
   const [loading, setLoading] = useState(true)
-  const [filter, setFilter] = useState<'all' | 'sent' | 'accepted' | 'declined'>('all')
+  const [filter, setFilter] = useState<'all' | 'sent' | 'accepted' | 'declined' | 'cancelled'>('all')
 
   useEffect(() => {
     fetchInvites()
@@ -55,6 +55,7 @@ export default function JobsPage() {
       case 'sent': return 'bg-yellow-100 text-yellow-800'
       case 'accepted': return 'bg-green-100 text-green-800'
       case 'declined': return 'bg-red-100 text-red-800'
+      case 'cancelled': return 'bg-gray-100 text-gray-800'
       default: return 'bg-gray-100 text-gray-800'
     }
   }
@@ -73,7 +74,7 @@ export default function JobsPage() {
 
       {/* Filter Tabs */}
       <div className="flex gap-2">
-        {(['all', 'sent', 'accepted', 'declined'] as const).map((status) => (
+        {(['all', 'sent', 'accepted', 'declined', 'cancelled'] as const).map((status) => (
           <button
             key={status}
             onClick={() => setFilter(status)}
