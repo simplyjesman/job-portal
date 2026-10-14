@@ -3,6 +3,7 @@ from .views import EmployerRegisterView, EmployerProfileView
 from .team_views import TeamMembersListView, TeamMemberDetailView
 from .job_views import JobListCreateView, JobDetailView
 from .job_management_views import JobMetricsView
+from .candidate_search_views import CandidateSearchView
 from .shortlist_views import ShortlistListView, ShortlistDetailView
 from .application_review_views import EmployerApplicationsListView, EmployerApplicationDetailView
 from .application_shortlist_views import ApplicationShortlistListView, ApplicationShortlistDetailView
